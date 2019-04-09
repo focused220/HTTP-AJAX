@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import './DisplayFriends.css'
+import './DisplayFriends.css';
+import {BrowserRouter as Route} from 'react-router-dom';
 
 
 export default class DisplayFriends extends Component {
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state = {
             name:'',
             age:'',
             email:'',
             friends: []
         }
+        console.log(props)
     }
 
     componentDidMount(){
@@ -48,18 +50,23 @@ export default class DisplayFriends extends Component {
     updateFriend = (name, age, email, id) => {  
         console.log('update friend ' + id);
         const form = document.querySelector('.manage-friends');
-        let friend = {
-            name: this.state.name,
-            age: this.state.age,
-            email: this.state.email,
-        };        
         form.name.value = name;
         form.age.value = age;
         form.email.value = email;
+        let friend = {
+            name: form.name.value,
+            age: form.age.value,
+            email: form.email.value,
+        };
+        // this.context.props.history.push(name)    
+        
 
-        form.setAttribute('onChange', `${null}`);
+        console.log(form.name.value, form.age.value, form.email.value, friend)
 
-        axios.put(`http://localhost:5000/friends/${id}`, friend).then((res) => console.log(res));
+        form.name.removeAttribute('onChange')
+
+        axios.put(`http://localhost:5000/friends/${id}`, 
+        friend).then((res) => console.log(res));
         
     }
 
@@ -70,7 +77,7 @@ export default class DisplayFriends extends Component {
     render() { 
         return (
             <div>
-                <div className='new-friend'>
+                <div className='new-friend'>                
                     <form className='manage-friends' onSubmit={this.makeFriend}>
                         <input type='text' name='name' placeholder='FirstName LastName' value={this.state.name} onChange={this.onChangeHandler}></input>
                         <input type='text' name='age' placeholder='Age' value={this.state.age} onChange={this.onChangeHandler}></input>
@@ -93,8 +100,7 @@ export default class DisplayFriends extends Component {
                 )
             )}
             </div>
-            </div>
-            
+            </div>            
           );
     }
 }
